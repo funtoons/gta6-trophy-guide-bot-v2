@@ -3,23 +3,105 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>GTA VI trophy checklist</title>
+<title>Leonida Trophy Atlas v2 — GTA 6 Platinum Planner</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header>
-  <h1>GTA VI trophy checklist</h1>
-  <p id="progress">0 of 55 earned</p>
+<header class="masthead">
+  <div class="brand">
+    <h1>Leonida Trophy Atlas <span class="v2">v2 — Platinum Planner</span></h1>
+    <p class="sub">Grand Theft Auto VI · PlayStation 5 · all 55 trophies, every guide cited, one plan to the platinum.</p>
+    <p class="facts"><span>55 trophies · 1 platinum · 2 gold · 6 silver · 46 bronze</span><span>28 hidden on PS5</span><span>0 online trophies</span><span>~200 h to platinum · difficulty 4/10</span><span>1 playthrough · no mission replay</span></p>
+  </div>
+  <div class="progressbox" aria-label="Progress">
+    <p class="progressline"><strong id="progressText">0 of 55 earned</strong> <span id="hoursLeft">· ~201.5 h left</span></p>
+    <div class="bar"><div id="progressFill" class="fill" style="width:0%"></div></div>
+    <p class="grades" id="gradeCounts"></p>
+    <p class="kinds" id="kindCounts"></p>
+  </div>
 </header>
-<div class="controls">
-  <label>Grade <select id="grade"><option value="all">All</option><option value="platinum">Platinum</option><option value="gold">Gold</option><option value="silver">Silver</option><option value="bronze">Bronze</option></select></label>
-  <button id="export" type="button">Export progress</button>
-  <label class="import">Import progress <input id="import" type="file" accept="application/json"></label>
-</div>
-<table>
-  <thead><tr><th>Earned</th><th>Trophy</th><th>Grade</th><th>How to get it</th></tr></thead>
-  <tbody id="rows"></tbody>
-</table>
+
+<nav class="views" aria-label="Views">
+  <button type="button" data-view="checklist" class="active">Checklist</button>
+  <button type="button" data-view="roadmap">Roadmap</button>
+  <button type="button" data-view="planner">Platinum Planner</button>
+  <button type="button" data-view="missable">Missable &amp; Warnings</button>
+</nav>
+
+<section id="view-checklist" class="view">
+  <div class="toolbar" role="search">
+    <input id="search" type="search" placeholder="Search trophy name, description or guide…" aria-label="Search trophies">
+    <label>Kind <select id="kind">
+      <option value="all">All kinds</option><option value="story">Story</option><option value="missable">Missable</option>
+      <option value="collectibles">Collectibles</option><option value="activities">Activities</option><option value="side">Side</option>
+      <option value="robberies">Robberies</option><option value="money">Money</option><option value="platinum">Platinum</option>
+      <option value="online">Online</option>
+    </select></label>
+    <label>Grade <select id="grade">
+      <option value="all">All grades</option><option value="platinum">Platinum</option><option value="gold">Gold</option>
+      <option value="silver">Silver</option><option value="bronze">Bronze</option>
+    </select></label>
+    <label>Difficulty <select id="difficulty">
+      <option value="all">Any</option><option value="1">1 — easy</option><option value="2">2</option>
+      <option value="3">3</option><option value="4">4</option><option value="5">5 — hardest</option>
+    </select></label>
+    <label>Chapter <select id="chapter">
+      <option value="all">Any chapter</option><option value="Ch 1">Chapter 1</option><option value="Ch 2">Chapter 2</option>
+      <option value="Ch 3">Chapter 3</option><option value="Ch 4">Chapter 4</option><option value="Ch 5">Chapter 5</option>
+      <option value="Anytime">Anytime</option><option value="Post-story">Post-story</option>
+    </select></label>
+    <label>Sort <select id="sort">
+      <option value="id">In list order</option><option value="difficulty">Hardest first</option>
+      <option value="hours">Longest first</option><option value="name">Name A–Z</option>
+    </select></label>
+    <label class="check"><input id="earnedOnly" type="checkbox"> Earned only</label>
+    <label class="check spoiler"><input id="spoiler" type="checkbox"> Hide story spoilers</label>
+    <button id="exportBtn" type="button">Export progress</button>
+    <label class="import">Import progress <input id="importFile" type="file" accept="application/json,.json"></label>
+    <button id="resetBtn" type="button" title="Clear all earned ticks">Reset</button>
+    <span id="importStatus" class="status" role="status"></span>
+  </div>
+  <p class="online-note" id="onlineNote"></p>
+  <p class="countline" id="countLine"></p>
+  <div class="layout">
+    <div class="listwrap">
+      <table>
+        <thead><tr><th class="c-earn">✓</th><th>Trophy (official name &amp; description)</th><th>Grade</th><th>Kind</th><th>Diff.</th><th>Time</th><th>Chapter</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <aside class="detail" id="detail" aria-live="polite"></aside>
+  </div>
+</section>
+
+<section id="view-roadmap" class="view" hidden>
+  <h2 id="roadmapTitle">Roadmap to the Platinum</h2>
+  <p class="viewintro" id="roadmapIntro"></p>
+  <div id="roadmapList" class="stages"></div>
+</section>
+
+<section id="view-planner" class="view" hidden>
+  <h2>Platinum Planner — your hours left</h2>
+  <p class="viewintro">Hours are the guide's own estimates per trophy, added up from what you have not ticked yet. The full platinum is rated about 200 hours (PowerPyx) — the total below starts near that and shrinks as you tick trophies off.</p>
+  <div id="plannerBody"></div>
+  <h3>The 100% Completion checklist (for A Long Road)</h3>
+  <p class="viewintro">The checklist appears after the credits under Progress &gt; Stats &gt; 100% Completion. It is lenient — closer to 60% true completion — but the rows marked “all” need every one. Figures: PowerPyx &amp; KeenGamer.</p>
+  <div id="checklist100"></div>
+</section>
+
+<section id="view-missable" class="view" hidden>
+  <h2>Missable trophies &amp; warnings</h2>
+  <p class="viewintro">Only one trophy is reported as potentially missable. Everything else can be finished in free-roam after the story.</p>
+  <div id="missableBody"></div>
+  <h3>Spoiler check — story trophies</h3>
+  <p class="viewintro">With “Hide story spoilers” on, the 12 story trophies below show as hidden until you tick them earned. Try it on the Checklist tab.</p>
+  <div id="spoilerDemo"></div>
+</section>
+
+<footer>
+  <p>Names, descriptions and grades are the official PlayStation 5 list as published (55 trophies, 2026-11-18). Guides are written for this entry in our own words; each cites the guide or tracker its facts come from. This app runs fully offline — it loads no file from the network and asks for no account, wallet or sign-in. Progress is stored only in your browser (localStorage) and in the file you export.</p>
+  <p>Sources used: PowerPyx GTA 6 Trophy Guide &amp; Roadmap · KeenGamer GTA 6 Trophy Guide &amp; Platinum Roadmap · PlanetGTA6 GTA 6 Trophies · Output Lag GTA 6 Trophy List · GTA Zone GTA 6 Trophies.</p>
+</footer>
 <script type="module" src="app.js"></script>
 </body>
 </html>
